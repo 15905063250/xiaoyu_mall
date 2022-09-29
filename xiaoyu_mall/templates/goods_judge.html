@@ -1,0 +1,106 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+	<title>小鱼商城-订单商品评价</title>
+	<link rel="stylesheet" type="text/css" href="{{ static('css/reset.css') }}">
+	<link rel="stylesheet" type="text/css" href="{{ static('css/main.css') }}">
+	<script type="text/javascript" src="{{ static('js/vue-2.5.16.js') }}"></script>
+    <script type="text/javascript" src="{{ static('js/axios-0.18.0.min.js') }}"></script>
+</head>
+<body>
+	<div id="app">
+	<div class="header_con">
+		<div class="header" v-cloak>
+			<div class="welcome fl">欢迎来到小鱼商城!</div>
+			<div class="fr">
+                <div v-if="username" class="login_btn fl">
+                    欢迎您：<em>[[ username ]]</em>
+                    <span>|</span>
+                    <a href="{{ url('users:logout') }}">退出</a>
+                </div>
+                <div v-else class="login_btn fl">
+                    <a href="{{ url('users:login') }}">登录</a>
+                    <span>|</span>
+                    <a href="{{ url('users:register') }}">注册</a>
+                </div>
+				<div class="user_link fl">
+					<span>|</span>
+					<a href="{{ url('users:info') }}">用户中心</a>
+					<span>|</span>
+					<a href="{{ url('carts:info') }}">我的购物车</a>
+					<span>|</span>
+					<a href="{{ url('users:myorderinfo',args=(1,)) }}">我的订单</a>
+				</div>
+			</div>
+		</div>		
+	</div>
+	<div class="search_bar clearfix">
+		<a href="{{ url('contents:index') }}" class="logo fl"><img src="{{ static('images/logo.png') }}"></a>
+		<div class="search_wrap fl">
+			<form method="get" action="/search/" class="search_con">
+                <input type="text" class="input_text fl" name="q" placeholder="搜索商品">
+                <input type="submit" class="input_btn fr" name="" value="搜索">
+            </form>
+			<ul class="search_suggest fl">
+				<li><a href="#">索尼微单</a></li>
+				<li><a href="#">优惠15元</a></li>
+				<li><a href="#">美妆个护</a></li>
+				<li><a href="#">买2免1</a></li>
+			</ul>
+		</div>
+	</div>
+    <div class="judge_con" v-for="(sku,index) in skus">
+        <div class="judge_goods fl">
+            <ul>
+                <li>
+                    <a :href="sku.url"><img :src="sku.default_image_url"></a>
+                    <h4><a :href="sku.url">[[ sku.name ]]</a></h4>
+                    <div class="price">￥[[ sku.price ]]</div>
+                </li>
+            </ul>
+        </div>
+        <div class="judge_goods_input fr">
+            <div class="judge_item">
+                <label>商品满意度</label>
+                <div class="stars fl">
+                    <a @mouseover="on_stars_mouseover(index, 1)" @mouseout="on_stars_mouseout(index)" @click="on_stars_click(index, 1)" class="star_off" :class="sku.score>=1?'light':''"></a>
+					<a @mouseover="on_stars_mouseover(index, 2)" @mouseout="on_stars_mouseout(index)" @click="on_stars_click(index, 2)" class="star_off" :class="sku.score>=2?'light':''"></a>
+					<a @mouseover="on_stars_mouseover(index, 3)" @mouseout="on_stars_mouseout(index)" @click="on_stars_click(index, 3)" class="star_off" :class="sku.score>=3?'light':''"></a>
+					<a @mouseover="on_stars_mouseover(index, 4)" @mouseout="on_stars_mouseout(index)" @click="on_stars_click(index, 4)" class="star_off" :class="sku.score>=4?'light':''"></a>
+					<a @mouseover="on_stars_mouseover(index, 5)" @mouseout="on_stars_mouseout(index)" @click="on_stars_click(index, 5)" class="star_off" :class="sku.score>=5?'light':''"></a>
+                </div>
+                <div class="score">[[ sku.display_score ]]分</div>
+            </div>
+            <div class="judge_item">
+                <label>发表评价</label>
+                <textarea class="judge_area" v-model="sku.comment"></textarea>
+            </div>
+            <div class="judge_item">
+                <input type="input" @click="save_comment(index)" value="提 交" class="judge_sub">
+                <input type="checkbox" v-model="sku.is_anonymous" class="no_name"> 匿名评价
+            </div>
+        </div>
+    </div>
+	<div class="footer">
+		<div class="foot_link">
+			<a href="#">关于我们</a>
+			<span>|</span>
+			<a href="#">联系我们</a>
+			<span>|</span>
+			<a href="#">招聘人才</a>
+			<span>|</span>
+			<a href="#">友情链接</a>		
+		</div>
+		<p>CopyRight © 2016 北京小鱼商业股份有限公司 All Rights Reserved</p>
+		<p>电话：010-****888    京ICP备*******8号</p>
+	</div>
+    {{ csrf_input }}
+	</div>
+	<script type="text/javascript">
+    	let skus = {{ uncomment_goods_list | safe }};
+    </script>
+    <script type="text/javascript" src="{{ static('js/common.js') }}"></script>
+	<script type="text/javascript" src="{{ static('js/goods_judge.js') }}"></script>
+</body>
+</html>
